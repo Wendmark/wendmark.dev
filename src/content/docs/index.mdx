@@ -1,0 +1,158 @@
+---
+title: Wendmark
+description: Show people how to use your app, without doing it for them. Open-source guided walkthroughs with a teaching cursor that never clicks for the user.
+template: splash
+head:
+  - tag: title
+    content: "Wendmark — show people how to use your app"
+hero:
+  tagline: Show people how to use your app, without doing it for them.
+  image:
+    file: ../../assets/wendmark-mark.svg
+  actions:
+    - text: Get started
+      link: /start/what-it-is/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/Wendmark/wendmark
+      icon: external
+      variant: minimal
+---
+
+Record a process once. Everyone else replays it as guidance: a teaching cursor
+glides to the next thing to click, a panel shows where they are, and **the
+person clicks it themselves**.
+
+<figure class="wm-shot">
+  <img
+    src="/images/guiding.png"
+    alt="A demo coffee shop with a Wendmark cursor pointing at the Profile link, a tooltip reading 'Open your Profile', and a panel listing all three steps of the process"
+    width="800"
+    height="520"
+  />
+</figure>
+
+## Why another one of these
+
+Most onboarding tools are built to drive. They click, they fill, they submit —
+and the user ends up somewhere they do not know how they got to. Wendmark takes
+the opposite position, and it is not a preference but a constraint the codebase
+enforces.
+
+<div class="wm-rule">
+  <p>Wendmark guides. It never acts.</p>
+  <p>
+    No synthetic clicks. No setting values. No submitting forms. No navigating
+    on someone's behalf. Overlays are <code>pointer-events: none</code>,
+    listeners are passive and capture-phase and never call
+    <code>preventDefault</code>. A step advances because the person did the
+    thing.
+  </p>
+</div>
+
+<div class="wm-grid">
+  <div class="wm-card">
+    <h3>Nobody is ever stuck in a tour</h3>
+    <p>
+      The guidance sits beside your application rather than in front of it.
+      Click something else, go to another page, ignore it — the app behaves
+      exactly as it does without Wendmark.
+    </p>
+  </div>
+  <div class="wm-card">
+    <h3>It teaches rather than performs</h3>
+    <p>
+      Somebody who has been guided through refunding an order has refunded an
+      order. They can do it again next week without the guidance.
+    </p>
+  </div>
+</div>
+
+## What it never records
+
+The recorder reads structure and the labels your own designers wrote — roles,
+accessible names, test ids, selectors. It does not read **anything anyone
+types**: not `.value`, not the text content of a field, not `contenteditable`,
+not keystrokes. Password, email and payment fields get no special case,
+because there is no case to make.
+
+Three things hold that up, and all three are things that *do not happen*: the
+recorder never reaches for a value, a test fails if anything touches the value
+getter, and the schema rejects unknown keys server-side. There are no
+screenshots and no session replay — [we turned those down on
+purpose](/decisions/step-snapshots/).
+
+[The full trust model](/running/security/), including what it does **not**
+protect, is written down rather than summarised.
+
+## How it works
+
+<div class="wm-grid">
+  <div class="wm-card">
+    <h3>1. Record</h3>
+    <p>
+      From the portal, open your own app and click through the process.
+      Wendmark writes down what you touched, never what you typed.
+    </p>
+  </div>
+  <div class="wm-card">
+    <h3>2. Edit</h3>
+    <p>
+      Reword each step, reorder, drop the stray clicks. Mark the steps that
+      point at your own data so they are found by shape rather than by name in
+      everybody else's account.
+    </p>
+  </div>
+  <div class="wm-card">
+    <h3>3. Publish</h3>
+    <p>
+      Publishing freezes a version. Editing the draft afterwards never
+      disturbs someone who is already mid-process.
+    </p>
+  </div>
+  <div class="wm-card">
+    <h3>4. Use</h3>
+    <p>
+      Your users find it in the launcher, or your own help menu calls
+      <code>Wendmark.start(id)</code>.
+    </p>
+  </div>
+</div>
+
+<figure class="wm-shot">
+  <img
+    src="/images/editing.png"
+    alt="The Wendmark portal showing a three-step process called 'Change your grind', each step with controls to reword it, mark it as the user's own data, reorder it or remove it"
+    width="800"
+    height="400"
+  />
+</figure>
+
+## One script tag
+
+```html
+<script src="https://your-portal.example.com/snippet.js" data-app="wm_…"></script>
+```
+
+That is the whole integration. The snippet is **12.6 KB gzipped** against a
+30 KB budget enforced in CI, renders everything inside a shadow root with
+`:host { all: initial }`, exposes exactly one global, and uses no framework —
+so it cannot restyle your pages and your pages cannot restyle it.
+
+Wendmark adds nothing to your interface unless you ask. The launcher button is
+**off by default**; call `Wendmark.openLauncher()` from your own help menu, or
+turn it on in the portal and name it whatever suits your product.
+
+## Open source, and self-hostable
+
+Two licences, chosen for where each part ends up running. The snippet is
+**Apache-2.0**, because it runs inside other companies' products and nothing
+should be asked of their source. The portal is **AGPL-3.0**, because it is the
+part someone could host as a service.
+
+There is no contributor licence agreement and none is planned, so what anyone
+contributes cannot quietly be made proprietary later.
+
+[Run it yourself](/running/deploying/) with Docker Compose and a Postgres, or
+[read how it is built](/built/overview/).

@@ -1,0 +1,136 @@
+/*
+ * Wendmark's palette, the same one the portal uses
+ * (apps/portal/app/globals.css) and the same one the logo is drawn in.
+ *
+ * Deep teal on warm chalk. Teal reads as orientation — routes, maps,
+ * way-marking — and stays out of the purple and blue that every other
+ * product in this category has taken.
+ *
+ * Starlight's colour names are semantic, not literal: `--sl-color-white` is
+ * "the colour that is white in dark mode", so in light mode it has to be the
+ * dark one. Hence the defaults below being the dark theme, with light
+ * inverting them. Getting this backwards renders every heading invisible.
+ */
+
+:root {
+  --wm-teal: #0e5c57;
+  --wm-teal-strong: #0a4642;
+  --wm-teal-light: #3f9d94;
+  --wm-teal-pale: #b5ded8;
+  --wm-ink: #08332f;
+  --wm-chalk: #f6f4ef;
+
+  /* A serif for headings, as the portal uses. System faces only, so the
+     site fetches no fonts from anybody. */
+  --wm-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia,
+    'Times New Roman', serif;
+}
+
+/* Dark theme — Starlight's default. */
+:root {
+  --sl-color-accent-low: #0a302d;
+  --sl-color-accent: var(--wm-teal-light);
+  --sl-color-accent-high: var(--wm-teal-pale);
+
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #e9eeed;
+  --sl-color-gray-2: #bcc6c4;
+  --sl-color-gray-3: #8a9794;
+  --sl-color-gray-4: #576764;
+  --sl-color-gray-5: #374845;
+  --sl-color-gray-6: #22332f;
+  --sl-color-black: #0b1a18;
+}
+
+/* Light theme — every one of the above inverted. */
+:root[data-theme='light'] {
+  --sl-color-accent-low: #d6e9e6;
+  --sl-color-accent: var(--wm-teal);
+  --sl-color-accent-high: var(--wm-teal-strong);
+
+  --sl-color-white: var(--wm-ink);
+  --sl-color-gray-1: #16403c;
+  --sl-color-gray-2: #2d514d;
+  --sl-color-gray-3: #5b6b68;
+  --sl-color-gray-4: #8b9794;
+  --sl-color-gray-5: #cfd6d4;
+  --sl-color-gray-6: #e9ece9;
+  --sl-color-gray-7: #f3f5f3;
+  --sl-color-black: var(--wm-chalk);
+}
+
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.hero h1,
+.hero > div > h1 {
+  font-family: var(--wm-display);
+  letter-spacing: -0.015em;
+}
+
+/* ---- The splash page ---- */
+
+.hero img {
+  filter: drop-shadow(0 18px 40px rgba(8, 51, 47, 0.18));
+}
+
+/* The one rule, set out as a rule. */
+.wm-rule {
+  margin: 2.5rem 0;
+  padding: 1.5rem 1.75rem;
+  border-left: 4px solid var(--sl-color-accent);
+  background: var(--sl-color-accent-low);
+  border-radius: 0 10px 10px 0;
+  color: var(--sl-color-white);
+}
+
+.wm-rule p:first-child {
+  margin-top: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  font-family: var(--wm-display);
+}
+
+.wm-rule p:last-child {
+  margin-bottom: 0;
+}
+
+/* Cards for the "how it works" and "why" rows. */
+.wm-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  margin: 2rem 0;
+}
+
+.wm-card {
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 12px;
+  background: var(--sl-color-black);
+}
+
+.wm-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+  color: var(--sl-color-white);
+}
+
+.wm-card p:last-child {
+  margin-bottom: 0;
+  color: var(--sl-color-gray-2);
+}
+
+.wm-shot {
+  margin: 2rem 0 0.75rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 34px rgba(8, 51, 47, 0.12);
+}
+
+.wm-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
