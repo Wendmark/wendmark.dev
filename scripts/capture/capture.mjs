@@ -9,6 +9,9 @@
  *   editing    — in the portal, rewording a step and publishing
  *   guiding    — a visitor opens "Show me how", picks that process and is
  *                walked through it, clicking every step themselves
+ *   reporting  — a visitor reports a problem: they redo what went wrong,
+ *                see the masked steps, say what happened and send it
+ *                (needs problem reports switched on for the Fika app)
  *
  * Needs the Wendmark repo's dev servers running (`pnpm dev` there: portal on
  * :3100, Fika on :5174) and its seeded development account. Each run first
@@ -191,14 +194,55 @@ async function guidingScene(browser) {
   await context.close()
 }
 
+async function reportingScene(browser) {
+  // A visitor again, with nothing in this browser from before.
+  const context = await newContext(browser)
+  const fika = await context.newPage()
+  await fika.goto(FIKA)
+  const opener = fika.locator('button.opener')
+  await opener.waitFor()
+
+  const capture = await startCapture(fika, path.join(WORK, 'reporting'))
+  await moveTo(fika, { x: 640, y: 420 })
+  await pause(900)
+
+  await click(fika, opener)
+  await pause(1100)
+  await click(fika, fika.locator('.report button'))
+  const report = fika.locator('[data-wendmark="report"]')
+  await report.waitFor()
+  await pause(1600)
+
+  // What they did before, done again. Each press appears in the panel,
+  // already masked.
+  await click(fika, fika.locator('.product-card').first().getByRole('button', { name: 'Add to cart' }))
+  await pause(1200)
+  await click(fika, fika.locator('nav').getByRole('link', { name: 'Subscription' }))
+  await pause(1200)
+  await click(fika, fika.getByRole('button', { name: 'Change plan', exact: true }))
+  await pause(1300)
+
+  await click(fika, report.getByRole('button', { name: 'Done', exact: true }))
+  await pause(700)
+  await click(fika, report.locator('textarea'))
+  await typeLike(fika, 'I added a coffee but my plan still shows two bags.')
+  await pause(800)
+  await click(fika, report.getByRole('button', { name: 'Send report', exact: true }))
+  await report.getByText('Your report was sent').waitFor()
+  await pause(2200)
+
+  await capture.stop()
+  await context.close()
+}
+
 async function main() {
   await mkdir(MEDIA, { recursive: true })
   if (!encodeOnly) await capture()
 
   // Guiding's poster is mid-guide, with the cursor, the ring and the panel
   // all showing; it is also the image shared when someone links the site.
-  const posters = { guiding: 14 }
-  for (const name of ['recording', 'editing', 'guiding']) {
+  const posters = { guiding: 14, reporting: 12 }
+  for (const name of ['recording', 'editing', 'guiding', 'reporting']) {
     if (want(name)) await encode(path.join(WORK, name), MEDIA, name, { posterAt: posters[name] })
   }
 }
@@ -218,6 +262,7 @@ async function capture() {
     }
     if (want('editing')) await editingScene(portal, appUrl)
     if (want('guiding')) await guidingScene(browser)
+    if (want('reporting')) await reportingScene(browser)
     await context.close()
   } finally {
     await browser.close()

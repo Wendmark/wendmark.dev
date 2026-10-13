@@ -11,8 +11,9 @@ are, and **the person clicks it themselves**.
 It is made of two pieces:
 
 - **The snippet** — one `<script>` tag in your application. It plays
-  processes, and when somebody with permission is recording, it records them.
-  12.6 KB gzipped, no framework, everything inside a shadow root.
+  processes, records them when somebody with permission asks, and lets your
+  users report a problem if you switch that on. 18.7 KB gzipped, no
+  framework, everything inside a shadow root.
 - **The portal** — a small Next.js application where your team edits and
   publishes processes, and where the snippet fetches them from. You run it;
   there is no hosted service.
