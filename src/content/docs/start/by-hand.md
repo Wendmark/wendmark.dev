@@ -1,10 +1,12 @@
 ---
-title: "Record a process"
+title: "Write a flow by hand"
 editUrl: https://github.com/Wendmark/wendmark/edit/main/docs/authoring-flows.md
 ---
 
-Until the recorder exists, flows are written by hand. This is also how you try
-Wendmark on an app other than Fika.
+Most processes are recorded from the portal: press **Record a process** on an
+app's page, click through it in your app, then reword and publish it in the
+portal. Writing one by hand is for everything else: trying Wendmark on an app
+that has no portal behind it, or a flow kept next to your own tests.
 
 ## 1. Load the snippet
 
@@ -44,9 +46,6 @@ What it gives you is a first draft. Expect to edit:
 - **`dynamic: true`** on steps that target one of the user's own items.
 - **Instruction steps**, added by hand where the user needs to read something
   rather than click.
-
-In Fika, the **Record** button does this for you: click it, click through a
-process, then click **Stop and replay**.
 
 ## 3. Assemble the flow
 
@@ -97,9 +96,7 @@ right screen and guidance resumes by itself.
 
 ## Where flows live today
 
-| Where                                   | What                                                     |
-| --------------------------------------- | -------------------------------------------------------- |
-| `apps/playground/src/wendmark/flows.ts` | Fika's demo flow, loaded by the "Guide me" button        |
-| Anywhere else                           | A `const` in a console session, or a JSON file you paste |
-
-Storage, an editor and publishing come with the portal, after the course.
+| Where         | What                                                     |
+| ------------- | -------------------------------------------------------- |
+| The portal    | Processes recorded from it, edited there, and published  |
+| Anywhere else | A `const` in a console session, or a JSON file you paste |

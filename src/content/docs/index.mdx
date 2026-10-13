@@ -20,18 +20,17 @@ hero:
       variant: minimal
 ---
 
+import Clip from '../../components/Clip.astro'
+
 Record a process once. Everyone else replays it as guidance: a teaching cursor
 glides to the next thing to click, a panel shows where they are, and **the
 person clicks it themselves**.
 
-<figure class="wm-shot">
-  <img
-    src="/images/guiding.png"
-    alt="A demo coffee shop with a Wendmark cursor pointing at the Profile link, a tooltip reading 'Open your Profile', and a panel listing all three steps of the process"
-    width="800"
-    height="520"
-  />
-</figure>
+<Clip
+  name="guiding"
+  alt="A visitor to the Fika coffee shop opens Show me how, picks Change your plan, and is guided through it: a teaching cursor glides to each thing to click, a panel lists the four steps, and the visitor clicks each one themselves until the plan is changed."
+  caption="A visitor follows a guide. Wendmark points; they click."
+/>
 
 ## Why another one of these
 
@@ -88,46 +87,51 @@ protect, is written down rather than summarised.
 
 ## How it works
 
-<div class="wm-grid">
-  <div class="wm-card">
-    <h3>1. Record</h3>
+<div class="wm-step">
+  <div>
+    <span class="wm-step-number">1</span>
+    <h3>Record</h3>
     <p>
       From the portal, open your own app and click through the process.
-      Wendmark writes down what you touched, never what you typed.
+      Each click becomes a step in the recorder, worded from what you touched.
+      Wendmark writes down what you clicked, never what you typed.
     </p>
   </div>
-  <div class="wm-card">
-    <h3>2. Edit</h3>
+  <Clip
+    name="recording"
+    alt="Recording in the Fika app: the person clicks Subscription, Change plan, Four bags a month and Save plan, and the dark recorder panel in the corner fills with four steps. They name the process Change your plan and save it as a draft."
+  />
+</div>
+
+<div class="wm-step">
+  <div>
+    <span class="wm-step-number">2</span>
+    <h3>Edit and publish</h3>
     <p>
-      Reword each step, reorder, drop the stray clicks. Mark the steps that
-      point at your own data so they are found by shape rather than by name in
-      everybody else's account.
+      Reword each step in your own voice, reorder, drop the stray clicks, and
+      mark the steps that point at your users' own data. Publishing freezes a
+      version: editing the draft afterwards never disturbs someone already
+      mid-process.
     </p>
   </div>
-  <div class="wm-card">
-    <h3>3. Publish</h3>
+  <Clip
+    name="editing"
+    address="portal.example"
+    alt="The Wendmark portal showing the recorded process Change your plan. Two steps are reworded, to Open Subscription in the top menu and Pick the plan you want, and the process is published."
+  />
+</div>
+
+<div class="wm-step wm-step-text">
+  <div>
+    <span class="wm-step-number">3</span>
+    <h3>Your users follow it</h3>
     <p>
-      Publishing freezes a version. Editing the draft afterwards never
-      disturbs someone who is already mid-process.
-    </p>
-  </div>
-  <div class="wm-card">
-    <h3>4. Use</h3>
-    <p>
-      Your users find it in the launcher, or your own help menu calls
-      <code>Wendmark.start(id)</code>.
+      They find it under <strong>Show me how</strong>, as at the top of this
+      page, or your own help menu calls <code>Wendmark.start(id)</code>. The
+      guide panel folds into a pill or drags aside whenever it is in the way.
     </p>
   </div>
 </div>
-
-<figure class="wm-shot">
-  <img
-    src="/images/editing.png"
-    alt="The Wendmark portal showing a three-step process called 'Change your grind', each step with controls to reword it, mark it as the user's own data, reorder it or remove it"
-    width="800"
-    height="400"
-  />
-</figure>
 
 ## One script tag
 
@@ -135,7 +139,7 @@ protect, is written down rather than summarised.
 <script src="https://your-portal.example.com/snippet.js" data-app="wm_…"></script>
 ```
 
-That is the whole integration. The snippet is **12.6 KB gzipped** against a
+That is the whole integration. The snippet is **about 16 KB gzipped** against a
 30 KB budget enforced in CI, renders everything inside a shadow root with
 `:host { all: initial }`, exposes exactly one global, and uses no framework —
 so it cannot restyle your pages and your pages cannot restyle it.

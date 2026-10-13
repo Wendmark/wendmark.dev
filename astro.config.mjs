@@ -26,7 +26,7 @@ export default defineConfig({
       head: [
         { tag: 'link', attrs: { rel: 'icon', href: '/icon.svg', type: 'image/svg+xml' } },
         { tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' } },
-        { tag: 'meta', attrs: { property: 'og:image', content: 'https://wendmark.dev/images/guiding.png' } },
+        { tag: 'meta', attrs: { property: 'og:image', content: 'https://wendmark.dev/media/guiding.jpg' } },
         { tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
       ],
       social: [
@@ -43,6 +43,7 @@ export default defineConfig({
             { label: 'What Wendmark is', slug: 'start/what-it-is' },
             { label: 'Install it', slug: 'start/install' },
             { label: 'Record a process', slug: 'start/recording' },
+            { label: 'Write a flow by hand', slug: 'start/by-hand' },
           ],
         },
         {

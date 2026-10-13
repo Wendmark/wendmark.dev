@@ -1,0 +1,96 @@
+---
+/**
+ * A demo clip from public/media, recorded by `pnpm capture`.
+ *
+ * Shown in a light browser frame so it reads as "this is an app", with the
+ * address it was recorded on. It plays only while on screen, never when the
+ * reader asked for less motion, and always has a pause button: looping
+ * motion must be stoppable. The button sits in the frame's title bar, where
+ * it can never cover the app in the clip.
+ */
+interface Props {
+  /** The clip's name in public/media, e.g. "guiding". */
+  name: string
+  /** What happens in the clip, for anyone who cannot see it. */
+  alt: string
+  /** The address shown in the frame. */
+  address?: string
+  caption?: string
+}
+
+const { name, alt, address = 'fika.example', caption } = Astro.props
+---
+
+<figure class="wm-clip not-content">
+  <div class="wm-clip-window">
+    <div class="wm-clip-bar">
+      <span class="wm-clip-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="wm-clip-address" aria-hidden="true">{address}</span>
+      <button class="wm-clip-toggle" type="button" aria-label="Play" data-clip-toggle>
+        <svg class="wm-clip-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+        <svg class="wm-clip-pause" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 5h4v14H7zM13 5h4v14h-4z" />
+        </svg>
+      </button>
+    </div>
+    <div class="wm-clip-screen">
+      <video
+        class="wm-clip-video"
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster={`/media/${name}.jpg`}
+        width="1920"
+        height="1200"
+        aria-label={alt}
+        data-clip
+      >
+        <source src={`/media/${name}.webm`} type="video/webm" />
+        <source src={`/media/${name}.mp4`} type="video/mp4" />
+      </video>
+    </div>
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+  for (const figure of document.querySelectorAll<HTMLElement>('.wm-clip')) {
+    const video = figure.querySelector<HTMLVideoElement>('[data-clip]')
+    const toggle = figure.querySelector<HTMLButtonElement>('[data-clip-toggle]')
+    if (!video || !toggle) continue
+
+    // Paused by the reader: stays paused until they press play again.
+    let heldByReader = reduce.matches
+
+    const sync = () => {
+      const playing = !video.paused
+      figure.classList.toggle('is-playing', playing)
+      toggle.setAttribute('aria-label', playing ? 'Pause' : 'Play')
+    }
+    video.addEventListener('play', sync)
+    video.addEventListener('pause', sync)
+
+    toggle.addEventListener('click', () => {
+      if (video.paused) {
+        heldByReader = false
+        void video.play()
+      } else {
+        heldByReader = true
+        video.pause()
+      }
+    })
+
+    // Play while on screen, rest while not: no point decoding what no one sees.
+    new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return
+        if (entry.isIntersecting && !heldByReader) void video.play().catch(() => {})
+        else if (!entry.isIntersecting) video.pause()
+      },
+      { threshold: 0.4 },
+    ).observe(video)
+  }
+</script>

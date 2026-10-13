@@ -8,11 +8,15 @@
     "dev": "astro dev --port 4321",
     "build": "astro build",
     "preview": "astro preview --port 4321",
-    "check": "astro check"
+    "check": "astro check",
+    "capture": "node scripts/capture/capture.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "0.42.6",
     "astro": "7.3.8",
     "sharp": "0.34.4"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
   }
 }
