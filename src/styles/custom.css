@@ -134,3 +134,161 @@
   width: 100%;
   height: auto;
 }
+
+/* ---- demo clips (src/components/Clip.astro) ---- */
+
+.wm-clip {
+  margin: 2rem 0 0.75rem;
+}
+
+.wm-clip-window {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--sl-color-gray-6);
+  box-shadow: 0 14px 40px rgba(8, 51, 47, 0.14);
+}
+
+.wm-clip-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 2.1rem;
+  padding: 0 0.8rem;
+  border-bottom: 1px solid var(--sl-color-gray-5);
+}
+
+.wm-clip-dots {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.wm-clip-dots i {
+  display: block;
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 50%;
+  background: var(--sl-color-gray-4);
+}
+
+.wm-clip-address {
+  flex: 1;
+  max-width: 22rem;
+  margin: 0 auto;
+  padding: 0.15rem 0.75rem;
+  border-radius: 999px;
+  background: var(--sl-color-gray-5);
+  color: var(--sl-color-gray-2);
+  font-size: 0.75rem;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wm-clip-screen {
+  position: relative;
+  line-height: 0;
+}
+
+.wm-clip-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fffaf2;
+}
+
+.wm-clip-toggle {
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--sl-color-gray-2);
+  cursor: pointer;
+}
+
+.wm-clip-toggle:hover {
+  background: var(--sl-color-gray-5);
+  color: var(--sl-color-white);
+}
+
+.wm-clip-toggle:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 1px;
+}
+
+.wm-clip-toggle svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  fill: currentColor;
+}
+
+.wm-clip .wm-clip-pause,
+.wm-clip.is-playing .wm-clip-play {
+  display: none;
+}
+
+.wm-clip.is-playing .wm-clip-pause {
+  display: block;
+}
+
+.wm-clip figcaption {
+  margin-top: 0.6rem;
+  color: var(--sl-color-gray-3);
+  font-size: var(--sl-text-sm);
+  text-align: center;
+}
+
+/* ---- "How it works": a step's words beside its clip ---- */
+
+.wm-step {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 2rem;
+  align-items: center;
+  margin: 2.5rem 0;
+}
+
+.wm-step > div > :first-child {
+  margin-top: 0;
+}
+
+.wm-step .wm-clip {
+  margin: 0;
+}
+
+.wm-step h3 {
+  margin: 0.4rem 0 0.5rem;
+}
+
+.wm-step p {
+  margin-top: 0;
+}
+
+.wm-step-number {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  margin-bottom: 0.6rem;
+  border-radius: 50%;
+  background: var(--sl-color-accent-low);
+  color: var(--sl-color-accent-high);
+  font-weight: 700;
+}
+
+.wm-step-text {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 36rem;
+}
+
+@media (max-width: 50rem) {
+  .wm-step {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
