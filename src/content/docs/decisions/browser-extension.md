@@ -41,7 +41,7 @@ In order of how much they are expected to be used:
 1. **A link.** "Copy link" produces
    `https://wendmark.dev/play#g=<the guide, compressed>`. The colleague
    clicks it; the play page shows the guide's title, the site it starts on
-   and its steps, and a **Start on portal.azure.com** button. With the
+   and its steps, and a **Start on app.example.com** button. With the
    extension, Start asks once for access to that site, opens it in the
    colleague's own signed-in session, and the guide begins. Without it, the
    page still lists the steps as text, with a link to install.
@@ -56,10 +56,11 @@ on one.
 ### Why the guide travels in wendmark.dev's address, not the target's
 
 The obvious design is to add the guide to the target site's own address:
-`https://portal.azure.com/#wendmark=…`. That breaks on exactly the kind of
-application this is for. Azure's portal, Gmail and many older single-page
-applications use the part after `#` for their own navigation
-(`https://portal.azure.com/#home`), and a guide there collides with it.
+`https://app.example.com/#wendmark=…`. That breaks on exactly the kind of
+application this is for. Many single-page applications — cloud consoles,
+webmail, older Angular apps — use the part after `#` for their own
+navigation (`https://app.example.com/#home`), and a guide there collides
+with it.
 
 So the link points at a page of ours, and the guide sits after `#` in
 **that** address. The part of an address after `#` is never sent to any
@@ -115,9 +116,9 @@ promise to users short.
 
 ## Frames
 
-A page can embed other pages in boxes (iframes). Azure's portal does this
-throughout: the shell is one page, and many of the panels are pages from
-other Microsoft addresses. The browser does not let code in the outer page
+A page can embed other pages in boxes (iframes). Cloud consoles and admin
+tools built from embedded panels do this throughout: the shell is one page,
+and many of the panels are pages from other addresses. The browser does not let code in the outer page
 reach inside a box from another address, so an engine running in one page
 misses clicks inside the boxes, cannot find their buttons, and does not
 know where to point the cursor.
@@ -129,21 +130,22 @@ ordered list and remembers which frame each step belongs to, much as
 whether a step's target is inside it; the one that finds it rings it and
 reports where it is.
 
-This is new work, and the first build proves it on Azure before anything
-else.
+This is new work, and the first build proves it before anything else, on a
+fixture any contributor can run: a page in the demo app that embeds a panel
+served from a second local address ([#89](https://github.com/Wendmark/wendmark/issues/89)).
 
 ## Where Wendmark works
 
 ### Frames, in the snippet and the extension
 
-| Scenario                                                   | Snippet (portal)                                            | Extension                                  |
-| ---------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------ |
-| No frames — most modern applications                       | Works                                                       | Works                                      |
-| The application's own pages in frames, same address        | Not today. Fixable: it may reach into them, it just doesn't | Fixable, as above                          |
-| Frames from another address the same company owns          | Fixable only with the snippet installed on both, in step    | Fixable with no setup — Azure is this case |
-| Another company's widget (card form, video, chat)          | Not possible, by browser design. A note step instead        | Possible with permission; a policy choice  |
-| Locked components (closed shadow roots)                    | Not possible                                                | Not possible                               |
-| Applications drawn on a canvas (Figma, a spreadsheet grid) | Not possible: there is nothing on the page to point at      | Not possible                               |
+| Scenario                                                   | Snippet (portal)                                            | Extension                                                  |
+| ---------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------- |
+| No frames — most modern applications                       | Works                                                       | Works                                                      |
+| The application's own pages in frames, same address        | Not today. Fixable: it may reach into them, it just doesn't | Fixable, as above                                          |
+| Frames from another address the same company owns          | Fixable only with the snippet installed on both, in step    | Fixable with no setup — frame-heavy consoles are this case |
+| Another company's widget (card form, video, chat)          | Not possible, by browser design. A note step instead        | Possible with permission; a policy choice                  |
+| Locked components (closed shadow roots)                    | Not possible                                                | Not possible                                               |
+| Applications drawn on a canvas (Figma, a spreadsheet grid) | Not possible: there is nothing on the page to point at      | Not possible                                               |
 
 The snippet's gap with an application's own same-address frames is ordinary
 engineering and is tracked separately. The extension's frame work builds
@@ -189,7 +191,8 @@ downloaded on every page load.
 ## Turned down
 
 - **The guide after `#` in the target site's address.** Breaks applications
-  that route with `#`: Azure, Gmail, many older single-page applications.
+  that route with `#`, which many single-page applications, webmail and
+  cloud consoles do.
 - **The guide in a `?` parameter.** Sent to the target site's server, logged
   there, and able to change what the application does.
 - **Short links from a link service.** Needs a server, which ends the
@@ -202,7 +205,8 @@ downloaded on every page load.
 
 - The size above which "Copy link" offers a file instead.
 - How steps are matched to pages in applications that route with `#`. Page
-  hints already follow routes written as `#/orders`, but not Azure's
-  `#home`, `#view/…` or `#@tenant/…`, which on Azure _is_ the page.
+  hints already follow routes written as `#/orders`, but not `#home`,
+  `#!/orders` or `#view/…`, which in those applications _is_ the page
+  ([#98](https://github.com/Wendmark/wendmark/issues/98)).
 - Whether to reach into other companies' widgets at all.
 - Firefox and Safari, after Chrome.
