@@ -73,7 +73,7 @@ As little as possible, by design:
 - **One global.** `window.Wendmark`, and nothing else. No prototype patching,
   no polyfills touching built-ins.
 - **No framework**, and a **30 KB gzipped budget** enforced in CI. It is
-  currently 12.6 KB.
+  currently 18.7 KB.
 - **Nothing in your interface unless you ask.** The launcher button is off by
   default.
 
@@ -87,11 +87,15 @@ help menu:
 Wendmark.openLauncher()          // the list of processes
 Wendmark.listFlows()             // if you would rather render it yourself
 Wendmark.start('<flow-id>')      // start one directly
+Wendmark.reportProblem()         // let them report what went wrong
 ```
 
 A process can also be **hidden**, which keeps it out of the launcher while
 `start(id)` still plays it. That is how you attach guidance to one of your own
 buttons without it appearing in a general list.
+
+`reportProblem()` only does something once problem reports are switched on for
+the app. See [Let users report a problem](/start/reporting/).
 
 ## Running it for real
 

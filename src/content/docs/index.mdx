@@ -133,13 +133,36 @@ protect, is written down rather than summarised.
   </div>
 </div>
 
+## When something goes wrong
+
+<div class="wm-step">
+  <div>
+    <h3>Let them show you</h3>
+    <p>
+      Switch on problem reports and your users can press
+      <strong>Report a problem</strong>, redo what went wrong, and send it in a
+      sentence. You get the steps they took, on the pages they took them.
+    </p>
+    <p>
+      Not a screen recording. Nothing is noted before they start or after
+      they stop, nothing they type is read, and every step is masked before
+      they see it, so the list they approve is exactly what you get.
+      <a href="/start/reporting/">How it works</a>.
+    </p>
+  </div>
+  <Clip
+    name="reporting"
+    alt="A visitor to the Fika demo shop chooses Report a problem, redoes three presses that appear in an orange panel as Press a button and Follow a link, writes that their plan still shows two bags, and sends the report."
+  />
+</div>
+
 ## One script tag
 
 ```html
 <script src="https://your-portal.example.com/snippet.js" data-app="wm_…"></script>
 ```
 
-That is the whole integration. The snippet is **about 16 KB gzipped** against a
+That is the whole integration. The snippet is **18.7 KB gzipped** against a
 30 KB budget enforced in CI, renders everything inside a shadow root with
 `:host { all: initial }`, exposes exactly one global, and uses no framework —
 so it cannot restyle your pages and your pages cannot restyle it.
@@ -147,6 +170,8 @@ so it cannot restyle your pages and your pages cannot restyle it.
 Wendmark adds nothing to your interface unless you ask. The launcher button is
 **off by default**; call `Wendmark.openLauncher()` from your own help menu, or
 turn it on in the portal and name it whatever suits your product.
+Problem reports are off by default too; `Wendmark.reportProblem()` offers them
+from your own menu once they are on.
 
 ## Open source, and self-hostable
 

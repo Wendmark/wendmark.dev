@@ -1,0 +1,89 @@
+---
+title: Let users report a problem
+description: Your users redo what went wrong and send it to you as a list of steps. No screen recording, nothing typed, and they see exactly what is sent.
+---
+
+import Clip from '../../../components/Clip.astro'
+
+When something does not work, the usual report is "it doesn't work". With
+problem reports switched on, your users can show you instead: they press
+**Report a problem**, redo what they did, say what went wrong in a sentence,
+and send it. You get the path they took, as steps, on the pages they took it.
+
+<Clip
+  name="reporting"
+  alt="A visitor to the Fika demo shop opens Show me how and chooses Report a problem. An orange panel appears. They press Add to cart, Subscription and Change plan, and each press is listed in the panel as Press a button or Follow a link, without the product names. They press Done, write that their plan still shows two bags, and send the report."
+  caption="Each press is listed, already masked, before anything is sent."
+/>
+
+It is not session replay. Nothing is captured until somebody asks for it,
+nothing after they press **Done**, and what is captured is a list of controls,
+not a film.
+
+## Turning it on
+
+Problem reports are **off for every app** until an administrator turns them
+on. In the portal, open the app's **Settings**, find **Problem reports** and
+press **Let users report problems**. Two choices come with it:
+
+- **What a report keeps.** *Structure only* is the default and the
+  recommended choice: the words on the page are taken out of every step, so a
+  report says "Press a button" rather than "Press Order FK-10421". Choose to
+  keep the labels only if you know your interface never shows your users'
+  own data. Structure only also takes ids out of addresses: `/orders/10421`
+  is sent as `/orders/*`.
+- **Delete reports after** so many days: 90 by default, anywhere from 7 to
+  365. After that a report is deleted outright, not hidden.
+
+## What your users see
+
+Once it is on, the launcher ends with **Something not working? Report a
+problem**. Pressing it opens an orange panel, unlike the teal guide, so nobody
+wonders which is which.
+
+1. **Redo it.** Each thing they press is added to the list, already masked.
+   They can leave any step out.
+2. **Say what went wrong.** One sentence, in their own words.
+3. **Send it.** The list they approved is exactly what is sent. If it cannot
+   be sent, they are told and can try again; closing the panel sends nothing.
+
+While a report is open the launcher steps aside, and a guide they were
+following waits, with its progress kept.
+
+## From your own help menu
+
+If you keep the launcher off, offer reports from your own interface:
+
+```js
+Wendmark.reportProblem()
+Wendmark.reportProblem({ userRef: currentUser.id })
+```
+
+`userRef` is optional: an identifier you already have, so whoever reads the
+report can reply to the person who sent it. Wendmark stores it exactly as
+given and never looks inside it. Without it, a report can be read but not
+answered, which is your call to make. It is also how, once the portal can read
+reports, you will be able to delete everything one person has sent.
+
+`reportProblem()` does nothing unless reports are switched on for the app.
+
+## What is never captured
+
+- **Nothing anyone types.** It uses the same recorder as authoring, which never
+  reads a field's value, a keystroke or `contenteditable` content.
+- **No screenshots, no page content, no console, no network traffic.**
+- **Nothing before they start, nothing after they stop.**
+- **No identity**, unless you pass a `userRef` yourself.
+
+The portal does not take the snippet's word for any of this: it applies your
+app's own masking again before it stores anything. The full reasoning, and the
+one gap masking cannot close (test ids built from record ids), is in
+[the decision record](/decisions/problem-reports/) and the
+[trust model](/running/security/).
+
+## Reading reports
+
+Reports are stored in the portal's database today. A list of them in the
+portal, with each report replayable by the teaching cursor along the path
+the user took, is the next stage of [issue
+#47](https://github.com/Wendmark/wendmark/issues/47).

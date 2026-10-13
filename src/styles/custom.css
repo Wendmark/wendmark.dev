@@ -269,6 +269,10 @@
   margin-top: 0;
 }
 
+.wm-step p + p {
+  margin-top: 0.75rem;
+}
+
 .wm-step-number {
   display: grid;
   place-items: center;

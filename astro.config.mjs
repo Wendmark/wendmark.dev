@@ -44,6 +44,7 @@ export default defineConfig({
             { label: 'Install it', slug: 'start/install' },
             { label: 'Record a process', slug: 'start/recording' },
             { label: 'Write a flow by hand', slug: 'start/by-hand' },
+            { label: 'Let users report a problem', slug: 'start/reporting' },
           ],
         },
         {
