@@ -1,6 +1,6 @@
 ---
 title: "Flow format compatibility"
-description: "What happens when a portal serves a flow to a snippet that is."
+description: "What happens when a portal serves a flow to a snippet that is older than the flow."
 editUrl: https://github.com/Wendmark/wendmark/edit/main/docs/decisions/flow-compatibility.md
 ---
 

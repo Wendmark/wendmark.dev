@@ -1,6 +1,6 @@
 ---
 title: "Problem reports"
-description: "What an end user's \"report a problem\" captures, who it belongs to,."
+description: "What an end user's \"report a problem\" captures, who it belongs to, and how long it lives."
 editUrl: https://github.com/Wendmark/wendmark/edit/main/docs/decisions/problem-reports.md
 ---
 
