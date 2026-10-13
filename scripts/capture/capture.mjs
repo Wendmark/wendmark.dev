@@ -12,6 +12,7 @@
  *   reporting  — a visitor reports a problem: they redo what went wrong,
  *                see the masked steps, say what happened and send it
  *                (needs problem reports switched on for the Fika app)
+ *   reviewing  — in the portal, opening the app's reports and reading one
  *
  * Needs the Wendmark repo's dev servers running (`pnpm dev` there: portal on
  * :3100, Fika on :5174) and its seeded development account. Each run first
@@ -235,6 +236,32 @@ async function reportingScene(browser) {
   await context.close()
 }
 
+async function reviewingScene(portal, appUrl) {
+  await portal.goto(appUrl)
+  const reports = portal.getByRole('link', { name: /^Reports/ })
+  await reports.waitFor()
+
+  const capture = await startCapture(portal, path.join(WORK, 'reviewing'))
+  await moveTo(portal, { x: 640, y: 400 })
+  await pause(1200)
+  await click(portal, reports)
+  await portal.getByRole('heading', { name: 'Problem reports' }).waitFor()
+  await pause(1600)
+
+  // The report the reporting clip sends, so the two clips tell one story.
+  await click(portal, portal.getByRole('link', { name: /plan still shows two bags/ }).first())
+  await portal.getByRole('heading', { name: 'Problem report' }).waitFor()
+  await pause(1800)
+
+  const firstStep = portal.locator('.report-step').first()
+  await firstStep.scrollIntoViewIfNeeded()
+  await pause(900)
+  await click(portal, firstStep.getByText('How it is found'))
+  await pause(2400)
+
+  await capture.stop()
+}
+
 async function main() {
   await mkdir(MEDIA, { recursive: true })
   if (!encodeOnly) await capture()
@@ -242,7 +269,7 @@ async function main() {
   // Guiding's poster is mid-guide, with the cursor, the ring and the panel
   // all showing; it is also the image shared when someone links the site.
   const posters = { guiding: 14, reporting: 12 }
-  for (const name of ['recording', 'editing', 'guiding', 'reporting']) {
+  for (const name of ['recording', 'editing', 'guiding', 'reporting', 'reviewing']) {
     if (want(name)) await encode(path.join(WORK, name), MEDIA, name, { posterAt: posters[name] })
   }
 }
@@ -263,6 +290,7 @@ async function capture() {
     if (want('editing')) await editingScene(portal, appUrl)
     if (want('guiding')) await guidingScene(browser)
     if (want('reporting')) await reportingScene(browser)
+    if (want('reviewing')) await reviewingScene(portal, appUrl)
     await context.close()
   } finally {
     await browser.close()

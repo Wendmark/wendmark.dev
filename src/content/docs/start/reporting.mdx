@@ -83,7 +83,35 @@ one gap masking cannot close (test ids built from record ids), is in
 
 ## Reading reports
 
-Reports are stored in the portal's database today. A list of them in the
-portal, with each report replayable by the teaching cursor along the path
-the user took, is the next stage of [issue
+<Clip
+  name="reviewing"
+  address="portal.example"
+  alt="The Wendmark portal: on the Fika app's page the Reports button shows a count. The list of problem reports opens, then one report: the person's note, when and from where it arrived, the pages, how it was kept and when it will be deleted, and three masked steps. One step's How it is found is opened, showing the selector the player would use."
+  caption="From the app's page to one report, and how a step is found again."
+/>
+
+Each app's page in the portal has a **Reports** button with a count.
+
+- **The list** shows each report's first line, how many steps, the pages, when
+  it arrived and, if your app passed a `userRef`, who sent it. Newest first.
+- **A report's page** shows the person's note in full, where it came from,
+  the pages, how it was kept and the day it will be deleted, then every step
+  as it was stored: under structure only, "Press a button" on which page, of
+  what kind, whether it pointed at the user's own data, and how the control
+  is found again.
+- **Delete** removes one report outright, after asking once.
+- **Everything from one person**: from a report's page, follow "everything
+  they sent" to see one `userRef`'s reports, where an administrator can
+  delete them all at once. That is the answer to "delete what you have about
+  me".
+
+Administrators and editors can read and delete reports; only an
+administrator can erase everything from one person. Viewers do not see
+reports at all, since they hold your users' own words.
+
+A report past its retention date is never shown: expired reports are swept
+before every read, as well as when new ones arrive.
+
+**Next:** replaying a report in your app with the teaching cursor, along the
+path the person took. It is being built under [issue
 #47](https://github.com/Wendmark/wendmark/issues/47).
