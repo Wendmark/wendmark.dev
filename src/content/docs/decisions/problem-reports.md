@@ -4,8 +4,6 @@ description: "What an end user's \"report a problem\" captures, who it belongs t
 editUrl: https://github.com/Wendmark/wendmark/edit/main/docs/decisions/problem-reports.md
 ---
 
-and how long it lives
-
 ## The idea
 
 A user gets stuck. Instead of writing "it doesn't work" into a support box,
@@ -80,6 +78,14 @@ This is what makes the decision easy. The player resolves a step from
 `selectors`, `testId`, `role` and `shadowPath`. `name` and `text` are
 tie-breakers and are what the _human_ reads in the portal's list — they are
 not what finds the element. A masked report still replays.
+
+That held only once selectors were unique on their own. Building the replay
+showed a gap: the first of several look-alike siblings got no position, so
+`nav > a.nav-link` matched every link in the nav. In a guide the name broke
+the tie; in a masked report nothing did, and the replay stalled on the first
+step. Selectors now always carry `:nth-of-type` when an element has siblings
+of the same tag. Reports sent before that change may still stall on such a
+step, which Skip gets past.
 
 What support loses is readability: `Click (button) in (section)` instead of
 `Click Order FK-10421`. That is a worse report. It is not a broken one, and
@@ -192,6 +198,46 @@ key, which anyone can read out of the page.
 4. **The portal's read path.** An Issues list per app, a report replayable
    with the player, delete one, delete by `userRef`, and the sweep that
    enforces retention.
+
+### Replaying a report
+
+**Replay in the app** on a report's page opens the app in a new tab, on the
+address the report came from and its first page, with `#wm=replay` in the
+address. The snippet there asks the portal for permission, exactly as author
+mode does ([author-mode.md](/decisions/author-mode/)): it invents a code, the portal
+tab that is waiting approves it, the snippet collects a session. Nothing
+secret is in the address and no window talks to another.
+
+What differs is what the session is worth:
+
+- **One report, read only.** Pairing requests and author sessions carry a
+  purpose, `record` or `replay`. A replay session has the report's id and
+  can fetch that report and nothing else; it cannot save a draft. A
+  recording session cannot read reports. A request for one purpose is never
+  approved as the other.
+- **`report:read` to approve it,** the same permission as opening the report.
+  Viewers cannot.
+- **Fifteen minutes,** not an hour: reading a report takes seconds and
+  following it a few minutes.
+- **A POST with the token in the body,** so it never sits in an address.
+
+The replay code lives in `author.js`, not `snippet.js`: only people sent from
+the portal ever replay, so ordinary visitors do not pay for it. It plays the
+report's steps with the ordinary player and teaching cursor, preceded by a
+step saying this is what somebody did, not necessarily the right way, so
+nobody takes it for a guide. Progress is not remembered between page loads:
+the portal serves flows by id to anyone with the app's key, and a report is
+not one of them.
+
+**Wendmark still never acts.** Whoever replays clicks every step themselves,
+in their own account. That is also the limit: their data is not the
+customer's, so a step can point at a row they do not have. The player then
+says it cannot find the step, and Skip moves on; often that difference is
+the bug.
+
+Masked page addresses (`/orders/*`) match any identifier in that place.
+When the first page had one masked out, the replay opens the app's root
+instead, and the guide says which page each step is on, as any guide does.
 
 ## Consequences
 

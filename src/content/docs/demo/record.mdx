@@ -1,0 +1,45 @@
+---
+title: Record and publish
+description: Watch a process being recorded in a real app, reworded in the portal and published. About a minute, in two clips.
+sidebar:
+  order: 1
+---
+
+import Clip from '../../../components/Clip.astro'
+
+The demo app is **Fika**, a coffee subscription shop. The process is the one
+its customers ask about most: changing how many bags arrive each month.
+Everything here is a real Wendmark running against Fika; nothing is mocked.
+
+## 1. Record it, in the app itself
+
+<Clip
+  name="recording"
+  alt="The Fika app opens from the portal with Wendmark's dark recorder in the corner. The view zooms in on the empty recorder, then out while the person clicks Subscription, Change plan, Four bags a month and Save plan. It zooms back in on the recorder, now listing four steps, where they name the process Change your plan and save it as a draft."
+/>
+
+What to watch:
+
+- **The recorder opens in the corner** of Fika, because the portal sent the
+  author there with **Record a process**. No secret was in the address.
+- **The person clicks through the process** as they always would. Wendmark
+  does none of it.
+- **Each click becomes a step**, worded from what was touched. Nothing typed is
+  ever read.
+- **They name it and press Save.** It reaches the portal as a draft, which
+  nobody else can see.
+
+## 2. Say it better, then publish
+
+<Clip
+  name="editing"
+  address="portal.example"
+  alt="The Wendmark portal showing the draft Change your plan. The view moves to the list of steps, where two steps are reworded to Open Subscription in the top menu and Pick the plan you want, then back out as the process is published."
+/>
+
+- **Rewording** puts each step in the product's own voice.
+- **Publishing** freezes a version. Customers only ever see a published one,
+  and someone halfway through is never disturbed by a later edit.
+
+**Next:** [what a customer sees](/demo/guide/). Or do this yourself:
+[Record a process](/start/recording/).

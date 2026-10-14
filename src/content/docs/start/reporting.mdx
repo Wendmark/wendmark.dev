@@ -1,20 +1,17 @@
 ---
 title: Let users report a problem
-description: Your users redo what went wrong and send it to you as a list of steps. No screen recording, nothing typed, and they see exactly what is sent.
+description: Your users redo what went wrong and send it to you as a list of steps, which you can replay in your app. No screen recording, nothing typed, and they see exactly what is sent.
 ---
 
-import Clip from '../../../components/Clip.astro'
+import Shot from '../../../components/Shot.astro'
 
 When something does not work, the usual report is "it doesn't work". With
 problem reports switched on, your users can show you instead: they press
 **Report a problem**, redo what they did, say what went wrong in a sentence,
-and send it. You get the path they took, as steps, on the pages they took it.
+and send it. You get the path they took, as steps, on the pages they took it,
+and you can replay it in your own app with the teaching cursor.
 
-<Clip
-  name="reporting"
-  alt="A visitor to the Fika demo shop opens Show me how and chooses Report a problem. An orange panel appears. They press Add to cart, Subscription and Change plan, and each press is listed in the panel as Press a button or Follow a link, without the product names. They press Done, write that their plan still shows two bags, and send the report."
-  caption="Each press is listed, already masked, before anything is sent."
-/>
+[Watch it end to end](/demo/report/).
 
 It is not session replay. Nothing is captured until somebody asks for it,
 nothing after they press **Done**, and what is captured is a list of controls,
@@ -41,11 +38,32 @@ Once it is on, the launcher ends with **Something not working? Report a
 problem**. Pressing it opens an orange panel, unlike the teal guide, so nobody
 wonders which is which.
 
+<Shot
+  name="report-entry"
+  closeUp
+  alt="Fika's Show me how launcher, open, with Something not working? Report a problem at the bottom of the list."
+  caption="The last row of the launcher."
+/>
+
 1. **Redo it.** Each thing they press is added to the list, already masked.
    They can leave any step out.
 2. **Say what went wrong.** One sentence, in their own words.
 3. **Send it.** The list they approved is exactly what is sent. If it cannot
    be sent, they are told and can try again; closing the panel sends nothing.
+
+<Shot
+  name="report-steps"
+  closeUp
+  alt="The orange Report a problem panel after three presses in Fika, listing them masked: Press a button, Follow a link, Press a button, each with the page it was on and a remove button."
+  caption="Each press is listed, already masked, and any of them can be left out."
+/>
+
+<Shot
+  name="report-describe"
+  closeUp
+  alt="The Report a problem panel's last stage: the visitor has written that they added a coffee but their plan still shows two bags, above the three steps that will be sent and a Send report button."
+  caption="One sentence, then Send report. This list is exactly what is sent."
+/>
 
 While a report is open the launcher steps aside, and a guide they were
 following waits, with its progress kept.
@@ -62,8 +80,8 @@ Wendmark.reportProblem({ userRef: currentUser.id })
 `userRef` is optional: an identifier you already have, so whoever reads the
 report can reply to the person who sent it. Wendmark stores it exactly as
 given and never looks inside it. Without it, a report can be read but not
-answered, which is your call to make. It is also how, once the portal can read
-reports, you will be able to delete everything one person has sent.
+answered, which is your call to make. It is also how you delete everything one
+person has sent.
 
 `reportProblem()` does nothing unless reports are switched on for the app.
 
@@ -83,14 +101,14 @@ one gap masking cannot close (test ids built from record ids), is in
 
 ## Reading reports
 
-<Clip
-  name="reviewing"
-  address="portal.example"
-  alt="The Wendmark portal: on the Fika app's page the Reports button shows a count. The list of problem reports opens, then one report: the person's note, when and from where it arrived, the pages, how it was kept and when it will be deleted, and three masked steps. One step's How it is found is opened, showing the selector the player would use."
-  caption="From the app's page to one report, and how a step is found again."
-/>
-
 Each app's page in the portal has a **Reports** button with a count.
+
+<Shot
+  name="portal-report"
+  address="portal.example"
+  alt="One problem report in the Wendmark portal: the customer's note, when and from where it arrived, the pages, how it was kept and when it will be deleted, a Replay in the app button, and the masked steps."
+  caption="One report: their words, where it came from, and what they did."
+/>
 
 - **The list** shows each report's first line, how many steps, the pages, when
   it arrived and, if your app passed a `userRef`, who sent it. Newest first.
@@ -112,6 +130,37 @@ reports at all, since they hold your users' own words.
 A report past its retention date is never shown: expired reports are swept
 before every read, as well as when new ones arrive.
 
-**Next:** replaying a report in your app with the teaching cursor, along the
-path the person took. It is being built under [issue
-#47](https://github.com/Wendmark/wendmark/issues/47).
+## Replaying a report
+
+Reading "Press a button, then Follow a link" only goes so far. On a report's
+page, **Replay in the app** opens your app and walks the teaching cursor along
+the path the person took, the same cursor your guides use.
+
+<Shot
+  name="replay-intro"
+  closeUp
+  alt="The teal guide panel in Fika at the start of a replay. It says this is a replay of a problem report: the steps they took, not necessarily the right ones, and quotes the customer's note, above the three steps."
+  caption="A replay starts by saying what it is, and quotes their note."
+/>
+
+- **It opens where they were:** the address the report came from, on the
+  first page they were on. If that page's address had an id masked out
+  (`/orders/*`), it starts at your app's front page instead.
+- **You do the clicking,** in your own account. Wendmark points at each step
+  and moves on when you have done it, exactly as a guide does.
+- **Your data is not theirs.** If a step points at something you do not have,
+  such as their order, the replay says it cannot find it and Skip moves on.
+  That difference is often the bug.
+
+<Shot
+  name="replay-step"
+  alt="Fika during a replay: the teaching cursor rings the Add to cart button the customer pressed, and the guide panel in the corner shows the replay's steps."
+  caption="The cursor points where they pressed. Support follows."
+/>
+
+Opening a replay works like recording: your app asks the portal for permission
+and the portal grants it because you, signed in, pressed the button. What it
+grants is narrower: reading **that one report**, for fifteen minutes, from that
+address. It cannot read other reports or save anything. It needs the same
+permission as opening the report, so viewers cannot. [The reasoning is in the
+decision record](/decisions/problem-reports/).

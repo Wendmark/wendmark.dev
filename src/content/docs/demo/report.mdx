@@ -1,0 +1,56 @@
+---
+title: Report and replay
+description: Watch a customer report a problem by redoing it, the report arrive in the portal, and support replay it in the app with the teaching cursor.
+sidebar:
+  order: 3
+---
+
+import Clip from '../../../components/Clip.astro'
+
+A customer added a coffee and expected their plan to change. It did not. In
+three clips: they show what they did, support reads it, and support walks the
+same path in the app.
+
+## 1. The customer shows what they did
+
+<Clip
+  name="reporting"
+  alt="A visitor to Fika opens Show me how. The view zooms in on the launcher's Report a problem row, and they press it. An orange panel opens. Back at full size, they press Add to cart, Subscription and Change plan. The view zooms in on the orange panel, which lists the three presses as masked steps such as Press a button. They press Done, write that their plan still shows two bags, and send it."
+/>
+
+- **Nothing is noted until they press Report a problem,** and nothing after
+  Done.
+- **Every step is masked before they see it.** "Press a button", not the name
+  of the coffee. The list they approve is exactly what is sent.
+- **They say what went wrong** in one sentence of their own.
+
+## 2. Support reads it in the portal
+
+<Clip
+  name="reviewing"
+  address="portal.example"
+  alt="The Wendmark portal. The Fika app's Reports button is pressed and the list of problem reports opens. One report opens; the view zooms in on the customer's note and the details of when and from where it arrived, then out, and one step's How it is found is opened."
+/>
+
+- **The note, the pages and the steps,** and the day the report will be
+  deleted.
+- **How each step is found again,** which is what makes the next clip
+  possible.
+
+## 3. Support replays it in the app
+
+<Clip
+  name="replaying"
+  alt="From the report's page, Replay in the app opens Fika. The view zooms in on the teal guide panel, which says this is a replay of a problem report: the steps they took, not necessarily the right ones, with the customer's note. The view zooms out and the teaching cursor points at the same Add to cart, Subscription and Change plan the customer pressed, while the support person clicks each one."
+/>
+
+- **The same teaching cursor,** following the customer's path rather than a
+  guide's.
+- **It says what it is first,** so nobody takes it for the right way to do
+  it.
+- **Support does every click,** in their own account. Where their data
+  differs from the customer's, the replay says it cannot find a step, and
+  that difference is often the bug.
+
+Turn this on for your own app: [Let users report a
+problem](/start/reporting/).

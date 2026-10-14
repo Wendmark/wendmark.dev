@@ -14,6 +14,9 @@ hero:
       link: /start/what-it-is/
       icon: right-arrow
       variant: primary
+    - text: See the demo
+      link: /demo/record/
+      variant: secondary
     - text: View on GitHub
       link: https://github.com/Wendmark/wendmark
       icon: external
@@ -21,6 +24,7 @@ hero:
 ---
 
 import Clip from '../../components/Clip.astro'
+import Shot from '../../components/Shot.astro'
 
 Record a process once. Everyone else replays it as guidance: a teaching cursor
 glides to the next thing to click, a panel shows where they are, and **the
@@ -29,7 +33,7 @@ person clicks it themselves**.
 <Clip
   name="guiding"
   alt="A visitor to the Fika coffee shop opens Show me how, picks Change your plan, and is guided through it: a teaching cursor glides to each thing to click, a panel lists the four steps, and the visitor clicks each one themselves until the plan is changed."
-  caption="A visitor follows a guide. Wendmark points; they click."
+  caption="A visitor follows a guide. Wendmark points; they click. The whole story is in the demo."
 />
 
 ## Why another one of these
@@ -97,9 +101,10 @@ protect, is written down rather than summarised.
       Wendmark writes down what you clicked, never what you typed.
     </p>
   </div>
-  <Clip
-    name="recording"
-    alt="Recording in the Fika app: the person clicks Subscription, Change plan, Four bags a month and Save plan, and the dark recorder panel in the corner fills with four steps. They name the process Change your plan and save it as a draft."
+  <Shot
+    name="recorder-steps"
+    closeUp
+    alt="Wendmark's dark recorder panel after four clicks in the Fika app, listing four steps worded from what was clicked."
   />
 </div>
 
@@ -114,10 +119,10 @@ protect, is written down rather than summarised.
       mid-process.
     </p>
   </div>
-  <Clip
-    name="editing"
-    address="portal.example"
-    alt="The Wendmark portal showing the recorded process Change your plan. Two steps are reworded, to Open Subscription in the top menu and Pick the plan you want, and the process is published."
+  <Shot
+    name="editing-steps"
+    closeUp
+    alt="The steps of Change your plan in the Wendmark portal after rewording, each with controls to reword, move or remove it."
   />
 </div>
 
@@ -146,13 +151,15 @@ protect, is written down rather than summarised.
     <p>
       Not a screen recording. Nothing is noted before they start or after
       they stop, nothing they type is read, and every step is masked before
-      they see it, so the list they approve is exactly what you get.
+      they see it, so the list they approve is exactly what you get. Then
+      replay it in your app with the teaching cursor.
       <a href="/start/reporting/">How it works</a>.
     </p>
   </div>
-  <Clip
-    name="reporting"
-    alt="A visitor to the Fika demo shop chooses Report a problem, redoes three presses that appear in an orange panel as Press a button and Follow a link, writes that their plan still shows two bags, and sends the report."
+  <Shot
+    name="report-steps"
+    closeUp
+    alt="The orange Report a problem panel listing three masked steps, such as Press a button and Follow a link, before anything is sent."
   />
 </div>
 
@@ -162,7 +169,7 @@ protect, is written down rather than summarised.
 <script src="https://your-portal.example.com/snippet.js" data-app="wm_…"></script>
 ```
 
-That is the whole integration. The snippet is **18.7 KB gzipped** against a
+That is the whole integration. The snippet is **18.8 KB gzipped** against a
 30 KB budget enforced in CI, renders everything inside a shadow root with
 `:host { all: initial }`, exposes exactly one global, and uses no framework —
 so it cannot restyle your pages and your pages cannot restyle it.

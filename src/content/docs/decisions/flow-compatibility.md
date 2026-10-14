@@ -4,8 +4,6 @@ description: "What happens when a portal serves a flow to a snippet that is olde
 editUrl: https://github.com/Wendmark/wendmark/edit/main/docs/decisions/flow-compatibility.md
 ---
 
-older than the flow
-
 ## The problem
 
 Today the portal serves no flows. The only snippet that exists is the one we
