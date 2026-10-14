@@ -3,19 +3,27 @@ title: Record a process
 description: Record a process by clicking through it in your own app, tidy it up in the portal, and publish it to your users.
 ---
 
-import Clip from '../../../components/Clip.astro'
+import Shot from '../../../components/Shot.astro'
 
 A process is recorded where its buttons are, in your own app, and started from
 the portal, where you are signed in. Then you tidy it up in the portal and
 publish it. Nobody writes a selector.
 
 This page assumes the snippet is on your app and the app is set up in the
-portal. If not, start with [Install it](/start/install/).
+portal. If not, start with [Install it](/start/install/). To watch the whole
+thing first, see the [demo](/demo/record/).
 
 ## 1. Start from the portal
 
 Open your app's page in the portal and press **Record a process**. Your app
 opens in a new tab with the recorder in its corner.
+
+<Shot
+  name="portal-app"
+  address="portal.example"
+  alt="The Fika app's page in the Wendmark portal, with its processes listed and the Record a process button."
+  caption="An app's page in the portal. Record a process is where it starts."
+/>
 
 No secret travels in the address. The new tab asks the portal for permission,
 and the portal grants it because you, signed in, pressed the button. [How the
@@ -23,10 +31,11 @@ pairing works](/built/author-mode/), and why it is built that way.
 
 ## 2. Click through it
 
-<Clip
-  name="recording"
-  alt="Recording in the Fika app: the person clicks Subscription, Change plan, Four bags a month and Save plan, and the dark recorder panel in the corner fills with four steps. They name the process Change your plan and save it as a draft."
-  caption="Each click becomes a step. The name goes in the recorder's header; Save sends a draft to the portal."
+<Shot
+  name="recorder-steps"
+  closeUp
+  alt="Wendmark's dark recorder panel after four clicks in Fika, listing four steps: Go to Subscription, Click Change plan, Choose Four bags a month and Click Save plan, with Pause, Add a note, Test and Save underneath."
+  caption="After four clicks: four steps. The name goes in the recorder's header; Save sends a draft to the portal."
 />
 
 Use your app as you normally would. Every click becomes a step, worded from
@@ -55,11 +64,11 @@ chooses or ticks. [The full trust model](/running/security/).
 
 ## 3. Reword it, then publish
 
-<Clip
-  name="editing"
-  address="portal.example"
-  alt="The Wendmark portal showing the recorded process Change your plan. Two steps are reworded, to Open Subscription in the top menu and Pick the plan you want, and the process is published."
-  caption="Rewording two steps and publishing."
+<Shot
+  name="editing-reword"
+  closeUp
+  alt="A step in the portal being reworded: the text box says Open Subscription in the top menu, with Save and Cancel buttons."
+  caption="Rewording a step in your own voice."
 />
 
 Open the draft in the portal. For each step you can:
@@ -76,6 +85,13 @@ Under **Where it appears**, list the pages it belongs to, as paths like
 `/subscription`, so the same process works on staging and in production; and
 choose whether it is offered in the launcher.
 
+<Shot
+  name="editing-steps"
+  closeUp
+  alt="The four steps of Change your plan in the portal after rewording, each with Reword, Their own data, move and Remove controls."
+  caption="The steps after rewording, ready to publish."
+/>
+
 **Publish** freezes a version. You can keep editing the draft afterwards, and
 nobody who is halfway through the process is disturbed until you publish again.
 
@@ -85,10 +101,20 @@ Open your app normally, not from the portal, and find it under **Show me
 how**, or call `Wendmark.start(id)` from your own help menu. It plays the way
 your users will see it.
 
-<Clip
-  name="guiding"
-  alt="The published guide played in Fika, from the Show me how launcher to the changed plan: a teaching cursor points at each thing to click, and the visitor clicks it themselves."
+<Shot
+  name="launcher-open"
+  closeUp
+  alt="Fika's Show me how launcher, opened into a list with Change your plan in it."
+  caption="Your users find it under Show me how, if you turn the launcher on."
 />
+
+<Shot
+  name="guide-step"
+  alt="Fika with a guide running: Wendmark's white teaching cursor rings Subscription in the top menu, and the guide panel in the corner lists the four steps with the first one current."
+  caption="The teaching cursor rings the next thing to click. The person clicks it."
+/>
+
+[Watch it played through](/demo/guide/).
 
 ## Writing one by hand instead
 

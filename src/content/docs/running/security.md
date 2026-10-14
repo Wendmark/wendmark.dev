@@ -84,6 +84,13 @@ create drafts. **Publishing is portal-only**, in a signed-in session an
 attacker does not have. The worst realistic outcome of a stolen token is a
 junk draft that a person has to delete.
 
+A session paired to **replay a problem report** is narrower still: fifteen
+minutes, one origin, and it can read that one report and nothing else — not
+other reports, not the list, and it cannot save a draft. Approving one needs
+`report:read`, the same as opening the report in the portal. A stolen replay
+session reveals one report, which is no more than a stolen portal session
+with that permission would, for a quarter of an hour.
+
 Pairing — how the token gets to the page — is covered in
 [decisions/author-mode.md](/decisions/author-mode/). The short version: the
 snippet invents a code and asks; the portal, where someone is signed in,

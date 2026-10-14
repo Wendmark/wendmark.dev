@@ -1,0 +1,67 @@
+---
+/**
+ * A screenshot from src/assets/stills, taken by `pnpm capture`.
+ *
+ * Two shapes. A whole page sits in the same light browser frame as the
+ * demo clips, with the address it was taken on. A close-up — one panel and
+ * a little of the page around it — is a card on its own, shown no larger
+ * than it was on screen, so a panel never looks bigger than it is.
+ */
+import { Image } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+
+interface Props {
+  /** The still's name, e.g. "recorder-steps". */
+  name: string
+  /** What the picture shows, for anyone who cannot see it. */
+  alt: string
+  /** A close-up rather than a whole page. */
+  closeUp?: boolean
+  /** The address shown in the frame of a whole page. */
+  address?: string
+  caption?: string
+}
+
+const { name, alt, closeUp = false, address = 'fika.example', caption } = Astro.props
+
+const stills = import.meta.glob<{ default: ImageMetadata }>('../assets/stills/*.webp', {
+  eager: true,
+})
+const still = stills[`../assets/stills/${name}.webp`]?.default
+if (!still) throw new Error(`No still called "${name}". Run pnpm capture.`)
+
+// Taken at twice the CSS size: half is how big it was on screen.
+const shownWidth = Math.round(still.width / 2)
+---
+
+<figure class:list={['wm-shot', 'not-content', { 'wm-shot-close': closeUp }]}>
+  {
+    closeUp ? (
+      <div class="wm-shot-card" style={`max-width: ${shownWidth}px`}>
+        <Image src={still} alt={alt} widths={[shownWidth, still.width]} sizes={`${shownWidth}px`} />
+      </div>
+    ) : (
+      <div class="wm-clip-window">
+        <div class="wm-clip-bar">
+          <span class="wm-clip-dots" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          <span class="wm-clip-address" aria-hidden="true">
+            {address}
+          </span>
+          <span class="wm-shot-spacer" aria-hidden="true" />
+        </div>
+        <Image
+          src={still}
+          alt={alt}
+          widths={[960, 1600, still.width]}
+          sizes="(min-width: 72rem) 48rem, 100vw"
+          class="wm-shot-image"
+        />
+      </div>
+    )
+  }
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

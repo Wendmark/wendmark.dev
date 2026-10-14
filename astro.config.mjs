@@ -48,6 +48,14 @@ export default defineConfig({
           ],
         },
         {
+          label: 'Demo',
+          items: [
+            { label: 'Record and publish', slug: 'demo/record' },
+            { label: 'Being guided', slug: 'demo/guide' },
+            { label: 'Report and replay', slug: 'demo/report' },
+          ],
+        },
+        {
           label: 'Running it',
           items: [
             { label: 'Deploying', slug: 'running/deploying' },
