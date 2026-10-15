@@ -1,0 +1,364 @@
+---
+/**
+ * wendmark.dev/play — the page a shared Wendmark link opens.
+ *
+ * The guide is in this page's own address, after `#`, which browsers never
+ * send to any server. So the page reads it here, in the browser, and the
+ * page itself must be trustworthy with it: no analytics, no third-party
+ * scripts, no fonts or images from anywhere else, and no request of any kind
+ * with the guide in it. It says so at the bottom.
+ *
+ * With the Wendmark extension installed, Start hands the link to the
+ * extension, which asks for the guide's site and plays it there. Without
+ * it, the steps can be followed by hand, or copied.
+ *
+ * See the Wendmark repository: docs/decisions/browser-extension.md.
+ */
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta name="referrer" content="no-referrer" />
+    <title>A shared guide · Wendmark</title>
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header>
+      <a href="/" class="brand" data-astro-prefetch="false"><img src="/icon.svg" alt="" width="22" height="22" />Wendmark</a>
+    </header>
+
+    <main>
+      <section id="loading">
+        <p class="lead">Reading the guide in this link…</p>
+      </section>
+
+      <section id="missing" hidden>
+        <h1>There is no guide in this link</h1>
+        <p class="lead">
+          It may have been cut short when it was copied. Ask whoever sent it to copy the link again,
+          or to send the guide as a file.
+        </p>
+      </section>
+
+      <section id="guide" hidden>
+        <p class="eyebrow">A guide for <span data-host></span></p>
+        <h1 data-name></h1>
+
+        <div id="with-extension" hidden>
+          <p class="lead">
+            Wendmark will open <strong data-host></strong> in this tab, signed in as you, and point at
+            each step. You do the clicking.
+          </p>
+          <button type="button" class="primary" id="start">Start on <span data-host></span></button>
+          <p class="status" id="start-status" role="status"></p>
+        </div>
+
+        <div id="without-extension" hidden>
+          <p class="lead">
+            With the <a href="https://github.com/Wendmark/wendmark/tree/main/apps/extension" data-astro-prefetch="false">Wendmark
+            extension for Chrome</a>, a cursor points at each step on <strong data-host></strong> while
+            you click. Without it, the steps below work just as well by hand.
+          </p>
+        </div>
+
+        <h2>The steps</h2>
+        <ol id="steps"></ol>
+        <div class="row">
+          <a id="open-site" class="secondary" data-astro-prefetch="false">Open <span data-host></span></a>
+          <button type="button" class="secondary" id="copy">Copy the steps</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        This page has no analytics and loads nothing from anywhere else. The guide is in the address
+        after <code>#</code>, which your browser never sends to us or to anyone.
+      </p>
+    </footer>
+
+    <script>
+      import { asText, guideFromHash, type Guide } from '../play/guide'
+
+      /** The Wendmark extension's id. The Chrome Web Store id joins it once published. */
+      const EXTENSION_IDS = ['niooiillhonlnokaifmcgnohmlhbcnhb']
+
+      type Runtime = {
+        sendMessage: (id: string, message: unknown, reply: (answer: unknown) => void) => void
+        lastError?: unknown
+      }
+
+      const byId = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
+
+      function fill(guide: Guide): void {
+        document.title = `${guide.name} · Wendmark`
+        for (const node of document.querySelectorAll('[data-host]')) node.textContent = guide.host
+        for (const node of document.querySelectorAll('[data-name]')) node.textContent = guide.name
+
+        const list = byId<HTMLOListElement>('steps')
+        let lastPage: string | null = null
+        list.replaceChildren(
+          ...guide.steps.map((step) => {
+            const item = document.createElement('li')
+            item.textContent = step.text
+            if (step.page && step.page !== lastPage) {
+              const page = document.createElement('small')
+              page.textContent = step.page
+              item.append(page)
+            }
+            if (step.page) lastPage = step.page
+            return item
+          }),
+        )
+
+        const open = byId<HTMLAnchorElement>('open-site')
+        open.href = guide.origin
+        open.rel = 'noopener noreferrer'
+
+        byId('copy').addEventListener('click', () => {
+          void navigator.clipboard.writeText(asText(guide)).then(
+            () => (byId('copy').textContent = 'Copied'),
+            () => (byId('copy').textContent = 'Could not copy'),
+          )
+        })
+      }
+
+      /** Whether the extension is installed, and which id answered. */
+      function findExtension(): Promise<string | null> {
+        const runtime = (globalThis as { chrome?: { runtime?: Runtime } }).chrome?.runtime
+        if (!runtime?.sendMessage) return Promise.resolve(null)
+        return new Promise((resolve) => {
+          let left = EXTENSION_IDS.length
+          for (const id of EXTENSION_IDS) {
+            runtime.sendMessage(id, { type: 'wendmark:hello' }, (answer) => {
+              // Reading lastError tells Chrome the missing extension was expected.
+              void runtime.lastError
+              if ((answer as { ok?: unknown } | undefined)?.ok === true) resolve(id)
+              else if (--left === 0) resolve(null)
+            })
+          }
+        })
+      }
+
+      function start(id: string): void {
+        const runtime = (globalThis as { chrome?: { runtime?: Runtime } }).chrome?.runtime
+        const status = byId('start-status')
+        const button = byId<HTMLButtonElement>('start')
+        button.addEventListener('click', () => {
+          button.disabled = true
+          status.textContent = 'Handing it to Wendmark…'
+          // The link goes to the extension inside this browser, not over the network.
+          runtime?.sendMessage(id, { type: 'wendmark:play', link: location.href }, (answer) => {
+            void runtime.lastError
+            if ((answer as { ok?: unknown } | undefined)?.ok !== true) {
+              button.disabled = false
+              status.textContent =
+                'Wendmark could not read this guide. Your extension may be older than the guide.'
+            }
+          })
+        })
+      }
+
+      async function main(): Promise<void> {
+        const guide = await guideFromHash(location.hash)
+        byId('loading').hidden = true
+        if (!guide) {
+          byId('missing').hidden = false
+          return
+        }
+        fill(guide)
+        byId('guide').hidden = false
+
+        const id = await findExtension()
+        byId(id ? 'with-extension' : 'without-extension').hidden = false
+        if (id) start(id)
+      }
+
+      void main()
+      addEventListener('hashchange', () => location.reload())
+    </script>
+
+    <style is:global>
+      :root {
+        --teal: #0e5c57;
+        --teal-strong: #0a4642;
+        --ink: #08332f;
+        --muted: #4f625f;
+        --line: #dfe5e3;
+        --chalk: #f6f4ef;
+        --paper: #ffffff;
+        --display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+        color-scheme: light dark;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --teal: #3f9d94;
+          --teal-strong: #b5ded8;
+          --ink: #e9eeed;
+          --muted: #a4b2af;
+          --line: #2b3a38;
+          --chalk: #0c1716;
+          --paper: #12201e;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: var(--chalk);
+        color: var(--ink);
+        font: 16px/1.55 system-ui, -apple-system, 'Segoe UI', sans-serif;
+      }
+
+      header {
+        padding: 16px 20px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--ink);
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      main {
+        flex: 1;
+        width: 100%;
+        max-width: 40rem;
+        margin: 0 auto;
+        padding: 3vh 16px 40px;
+      }
+
+      section {
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--paper);
+        box-shadow: 0 14px 40px rgba(8, 51, 47, 0.1);
+      }
+
+      .eyebrow {
+        margin: 0 0 4px;
+        color: var(--teal);
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-family: var(--display);
+        font-size: clamp(26px, 5vw, 34px);
+        line-height: 1.15;
+        overflow-wrap: anywhere;
+      }
+
+      h2 {
+        margin: 24px 0 8px;
+        font-size: 15px;
+        color: var(--muted);
+      }
+
+      .lead {
+        color: var(--muted);
+      }
+
+      a {
+        color: var(--teal);
+      }
+
+      button,
+      a.secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font: inherit;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      button.primary {
+        border: none;
+        background: var(--teal);
+        color: #fff;
+      }
+
+      button.primary:disabled {
+        opacity: 0.6;
+        cursor: default;
+      }
+
+      .secondary {
+        border: 1px solid var(--line);
+        background: var(--paper);
+        color: var(--ink);
+      }
+
+      button:focus-visible,
+      a:focus-visible {
+        outline: 2px solid var(--teal);
+        outline-offset: 2px;
+      }
+
+      .status {
+        min-height: 1.5em;
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      ol {
+        margin: 0;
+        padding-left: 24px;
+        display: grid;
+        gap: 6px;
+      }
+
+      li {
+        overflow-wrap: anywhere;
+      }
+
+      li small {
+        display: block;
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12.5px;
+      }
+
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 18px;
+      }
+
+      footer {
+        max-width: 40rem;
+        margin: 0 auto;
+        padding: 0 16px 28px;
+        color: var(--muted);
+        font-size: 13px;
+        text-align: center;
+      }
+
+      code {
+        font-size: 0.95em;
+      }
+    </style>
+  </body>
+</html>
