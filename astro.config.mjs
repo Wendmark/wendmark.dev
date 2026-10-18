@@ -45,6 +45,7 @@ export default defineConfig({
             { label: 'Record a process', slug: 'start/recording' },
             { label: 'Write a flow by hand', slug: 'start/by-hand' },
             { label: 'Let users report a problem', slug: 'start/reporting' },
+            { label: 'Wendmark for Chrome', slug: 'extension' },
           ],
         },
         {
