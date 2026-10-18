@@ -69,14 +69,16 @@ reasoning is written down rather than assumed.
 
 Early, and honest about it: **not yet released or versioned**, and the API may
 still move. The whole path works end to end — record, edit, publish, target,
-play, resume — and is covered by about 900 tests.
+play, resume — and is covered by about 1,000 tests.
 
 | Working | Not yet |
 | --- | --- |
-| Recording from inside your own app | [Problem reports](/decisions/problem-reports/) — users retracing what went wrong |
-| Editing, reordering, publishing with frozen versions | A browser extension, for apps that cannot add a script tag |
+| Recording from inside your own app | Frames from other sites inside a page |
+| Editing, reordering, publishing with frozen versions | Firefox and Safari for the extension |
 | URL targeting, hidden processes, pause and restore | Analytics and flow-health checks |
 | The launcher, progress across reloads, shadow DOM | A hosted service |
+| [Problem reports](/start/reporting/), replayable in your app | |
+| [A Chrome extension](/extension/): record, share a link, follow it | |
 | Email-and-password sign-in, optional OIDC | |
 | Self-hosting with Docker Compose | |
 
