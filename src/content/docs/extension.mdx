@@ -1,0 +1,60 @@
+---
+title: Wendmark for Chrome
+description: A free browser extension that points at each step of a guide someone shared with you, while you do the clicking. Record and share your own guides too, no account needed.
+---
+
+Someone sent you a Wendmark link: a few steps to do something in a web app.
+With the extension, a cursor points at each step **in the app itself**, in
+your own signed-in session, and moves on when you have done it. You do every
+click. Wendmark only ever shows the way.
+
+You can record and share guides of your own the same way: click the icon on a
+page, press **Record a process**, click through it, and copy a link. No
+account, no server.
+
+## Install it
+
+The extension is on its way to the Chrome Web Store, where installing it will
+take one click. Until then, it is installed from its source:
+
+1. Get the code and build it (you need [Node.js](https://nodejs.org) 22 and
+   [pnpm](https://pnpm.io)):
+
+   ```bash
+   git clone https://github.com/Wendmark/wendmark.git
+   cd wendmark
+   pnpm install
+   pnpm --filter @wendmark/extension build
+   ```
+
+2. In Chrome, open `chrome://extensions`, switch on **Developer mode** (top
+   right), press **Load unpacked** and choose `apps/extension/dist`.
+3. Pin it from the puzzle-piece menu so the Wendmark icon is always there.
+
+Then go back to the tab with the link: **Start** appears there.
+
+It works in Chrome and in other browsers built on Chromium, such as Edge and
+Brave. Firefox and Safari are not supported yet.
+
+## What it can and cannot see
+
+- **Nothing, until you ask.** It runs on a page only when you click its icon,
+  or when you start a guide and allow that one site. It never asks for "all
+  websites".
+- **Never what you type.** Guides are made of what was clicked, never of
+  anything typed into a field.
+- **Your guides stay in your browser.** A shared guide travels inside its
+  link, after the `#`, which is never sent to any server, wendmark.dev
+  included. Before sharing, you see exactly what goes, with the words from
+  the page taken out by default.
+
+## If a link will not open
+
+Some companies block newly registered websites, and wendmark.dev is new. The
+guide is inside the link itself, so you do not need the website: open the
+Wendmark side panel from its icon, choose **Import a guide → Paste a link**,
+paste it, and press **Play**.
+
+The extension is open source under the Apache 2.0 licence.
+[Read the code](https://github.com/Wendmark/wendmark/tree/main/apps/extension),
+or [how it is built and why](/decisions/browser-extension/).

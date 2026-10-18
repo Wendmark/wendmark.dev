@@ -58,11 +58,22 @@
         </div>
 
         <div id="without-extension" hidden>
-          <p class="lead">
-            With the <a href="https://github.com/Wendmark/wendmark/tree/main/apps/extension" data-astro-prefetch="false">Wendmark
-            extension for Chrome</a>, a cursor points at each step on <strong data-host></strong> while
-            you click. Without it, the steps below work just as well by hand.
-          </p>
+          <div class="invite">
+            <p class="invite-title">Follow it with a pointer</p>
+            <p>
+              With the free Wendmark extension, a cursor points at each step on <strong
+                data-host></strong> while you click. You do every click; it only shows the way.
+            </p>
+            <div id="invite-chrome">
+              <a class="button primary" href="/extension/" data-astro-prefetch="false">Add Wendmark to Chrome</a>
+              <p class="small">Installed it? Come back to this tab and <strong>Start</strong> appears.</p>
+            </div>
+            <p id="invite-other" class="small" hidden>
+              The extension works in Chrome, Edge, Brave and other Chromium browsers. In this browser,
+              follow the steps below by hand.
+            </p>
+          </div>
+          <p class="lead">Or follow the steps below by hand.</p>
         </div>
 
         <h2>The steps</h2>
@@ -174,8 +185,52 @@
         byId('guide').hidden = false
 
         const id = await findExtension()
-        byId(id ? 'with-extension' : 'without-extension').hidden = false
-        if (id) start(id)
+        if (id) {
+          byId('with-extension').hidden = false
+          start(id)
+          return
+        }
+        byId('without-extension').hidden = false
+        if (!isChromium()) {
+          byId('invite-chrome').hidden = true
+          byId('invite-other').hidden = false
+          return
+        }
+        waitForInstall()
+      }
+
+      /** Chrome, Edge, Brave and the rest: the browsers the extension runs in. */
+      function isChromium(): boolean {
+        const brands = (navigator as { userAgentData?: { brands?: { brand: string }[] } })
+          .userAgentData?.brands
+        if (brands) return brands.some((entry) => /Chromium|Chrome|Edge|Brave|Opera/.test(entry.brand))
+        return /Chrome\//.test(navigator.userAgent)
+      }
+
+      /**
+       * Someone who goes off to install the extension comes back to this tab.
+       * Chrome connects a page to an extension only if it was installed
+       * before the page loaded, so on their return the page loads again,
+       * and Start appears. The guide is in the address, so nothing is lost.
+       */
+      function waitForInstall(): void {
+        let away = false
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'hidden') {
+            away = true
+            return
+          }
+          if (!away) return
+          away = false
+          void findExtension().then((id) => {
+            if (!id) location.reload()
+            else {
+              byId('without-extension').hidden = true
+              byId('with-extension').hidden = false
+              start(id)
+            }
+          })
+        })
       }
 
       void main()
@@ -313,6 +368,42 @@
       a:focus-visible {
         outline: 2px solid var(--teal);
         outline-offset: 2px;
+      }
+
+      .invite {
+        margin: 4px 0 16px;
+        padding: 16px 18px;
+        border: 1px solid var(--teal);
+        border-radius: 12px;
+        background: color-mix(in srgb, var(--teal) 7%, var(--paper));
+      }
+
+      .invite p {
+        margin: 0 0 10px;
+      }
+
+      .invite-title {
+        font-weight: 700;
+        font-size: 17px;
+      }
+
+      a.button {
+        display: inline-flex;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      a.button.primary {
+        background: var(--teal);
+        color: #fff;
+      }
+
+      .small {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 14px;
       }
 
       .status {
