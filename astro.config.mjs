@@ -46,6 +46,7 @@ export default defineConfig({
             { label: 'Write a flow by hand', slug: 'start/by-hand' },
             { label: 'Let users report a problem', slug: 'start/reporting' },
             { label: 'Wendmark for Chrome', slug: 'extension' },
+            { label: 'Privacy', slug: 'privacy' },
           ],
         },
         {
