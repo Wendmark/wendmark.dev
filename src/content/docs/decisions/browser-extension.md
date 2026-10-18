@@ -68,9 +68,16 @@ server — not to wendmark.dev, which is static files on GitHub Pages, and not
 to the target site. It works the same for every site, whatever that site
 does with its own addresses.
 
-A compressed guide of ten steps is roughly 1–2 KB, which chat tools and
-email carry without trouble. Above a cut-off, to be set in the first build,
-"Copy link" offers the file instead.
+What travels is `{ v: 1, origin, flow }`: the site the guide starts on and
+the flow as the preview showed it, compressed with `deflate-raw` and written
+in base64url. A ten-step guide with realistic selectors makes a link of
+under 500 characters masked, and under 600 with the words kept, because
+selectors repeat and compress well. Above **2,000 characters**, the length
+chat tools, email and older browsers all carry, "Copy link" offers the file
+instead. Text carries the link underneath when there is one, so pasting the
+text back in imports the guide; the file is the same object as JSON with
+`"format": "wendmark-guide"`. All three are read back through one strict
+check (`apps/extension/src/transfer.ts`).
 
 ### The play page
 
@@ -87,7 +94,12 @@ relies on one window reaching another — the `window.opener` failure in
 [author-mode.md](/decisions/author-mode/) cannot happen here.
 
 Because the guide is in the page's address, `/play` carries **no analytics
-or third-party scripts**, and says so. A company that would rather not
+or third-party scripts**, and says so.
+
+The play page is a convenience, not a dependency. Some companies block newly
+registered domains, so the side panel also takes a pasted link (**Import**)
+and plays it (**Play**): the link is decoded inside the extension and
+wendmark.dev is never contacted. A company that would rather not
 depend on wendmark.dev can host its own copy; letting the extension trust
 more than one play page is a later option.
 
@@ -98,6 +110,15 @@ being clicked (`activeTab`), or when a guide is started from the play page,
 which requests access to that one site at that moment. It never asks for
 "all websites". That keeps the Chrome Web Store review simple and the
 promise to users short.
+
+**Frames from other addresses need their own permission.** `activeTab`
+covers the address of the tab itself, not iframes inside it that come from
+somewhere else. So recording or playing on a page with such frames also asks
+for access to each frame's address, found at that moment from the frames the
+page actually has, and a guide stores its frames' addresses so a replay can
+ask for the same ones up front. Still one site at a time, still only when
+asked; never "all websites". Found in the frames spike
+([#89](https://github.com/Wendmark/wendmark/issues/89)).
 
 ## What carries over unchanged
 
@@ -130,9 +151,22 @@ ordered list and remembers which frame each step belongs to, much as
 whether a step's target is inside it; the one that finds it rings it and
 reports where it is.
 
-This is new work, and the first build proves it before anything else, on a
-fixture any contributor can run: a page in the demo app that embeds a panel
-served from a second local address ([#89](https://github.com/Wendmark/wendmark/issues/89)).
+This was proven first, on a fixture any contributor can run: Fika's Billing
+page embeds a provider panel from its other local host name
+(`apps/playground/README.md`). The spike in
+[#89](https://github.com/Wendmark/wendmark/issues/89) recorded a process
+crossing into that frame and replayed it, with the recorder, resolver and
+player unchanged inside the frame. What it showed the build needs:
+
+- **One panel, in the top page.** Inside a frame only the ring and cursor
+  are drawn. A panel drawn inside a small frame covered the very button the
+  person had to press, which is guidance getting in the way.
+- **Keep looking while frames load,** as the player already does in one
+  page: a page change can mount the frame that holds the next step a moment
+  later.
+- **Inject into frames as they appear,** not once at the start.
+- **A frame's address in each step,** masked like a page path, to choose
+  between frames on replay and to ask for its permission.
 
 ## Where Wendmark works
 
@@ -203,7 +237,6 @@ downloaded on every page load.
 
 ## Open questions
 
-- The size above which "Copy link" offers a file instead.
 - How steps are matched to pages in applications that route with `#`. Page
   hints already follow routes written as `#/orders`, but not `#home`,
   `#!/orders` or `#view/…`, which in those applications _is_ the page
