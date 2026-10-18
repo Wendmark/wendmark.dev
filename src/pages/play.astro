@@ -96,8 +96,11 @@
     <script>
       import { asText, guideFromHash, type Guide } from '../play/guide'
 
-      /** The Wendmark extension's id. The Chrome Web Store id joins it once published. */
-      const EXTENSION_IDS = ['niooiillhonlnokaifmcgnohmlhbcnhb']
+      /**
+       * The Wendmark extension's ids: the Chrome Web Store's first, then the
+       * fixed id of a copy built from source and loaded unpacked.
+       */
+      const EXTENSION_IDS = ['lpkmodjgcejabaikcifkfhnmpdigpipb', 'niooiillhonlnokaifmcgnohmlhbcnhb']
 
       type Runtime = {
         sendMessage: (id: string, message: unknown, reply: (answer: unknown) => void) => void
