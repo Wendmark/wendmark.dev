@@ -14,27 +14,21 @@ account, no server.
 
 ## Install it
 
-Wendmark for Chrome will soon be in the Chrome Web Store, where installing it
-takes one click. Until then, it can be installed from its source:
+1. **[Add Wendmark to Chrome](https://chromewebstore.google.com/detail/wendmark/lpkmodjgcejabaikcifkfhnmpdigpipb)** from the Chrome Web Store.
+2. Pin it from the puzzle-piece menu, so the Wendmark icon is always there.
 
-1. Get the code and build it (you need [Node.js](https://nodejs.org) 22 and
-   [pnpm](https://pnpm.io)):
-
-   ```bash
-   git clone https://github.com/Wendmark/wendmark.git
-   cd wendmark
-   pnpm install
-   pnpm --filter @wendmark/extension build
-   ```
-
-2. In Chrome, open `chrome://extensions`, switch on **Developer mode** (top
-   right), press **Load unpacked** and choose `apps/extension/dist`.
-3. Pin it from the puzzle-piece menu so the Wendmark icon is always there.
-
-Then go back to the tab with the link: **Start** appears there.
+If you came here from a link, go back to its tab: **Start** appears there.
 
 It works in Chrome and in other browsers built on Chromium, such as Edge and
 Brave. Firefox and Safari are not supported yet.
+
+:::note[From source]
+To build it yourself, for development or to read what you install:
+`pnpm install && pnpm --filter @wendmark/extension build` in
+[the repository](https://github.com/Wendmark/wendmark), then **Load
+unpacked** from `chrome://extensions` with Developer mode on, choosing
+`apps/extension/dist`.
+:::
 
 ## What it can and cannot see
 
