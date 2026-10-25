@@ -1,0 +1,44 @@
+---
+/**
+ * An edited film from public/media, such as the intro.
+ *
+ * Unlike a demo clip it has sound, so it never plays on its own: the reader
+ * presses play, and the browser's own controls let them pause, seek and mute.
+ * Only the poster loads until then.
+ */
+interface Props {
+  /** The film's name in public/media, e.g. "intro". */
+  name: string
+  /** What happens in the film, for anyone who cannot see it. */
+  alt: string
+  caption?: string
+  /** Credit for third-party media in the film, shown under the caption. */
+  credit?: string
+}
+
+const { name, alt, caption, credit } = Astro.props
+---
+
+<figure class="wm-film not-content">
+  <video
+    class="wm-film-video"
+    controls
+    playsinline
+    preload="none"
+    poster={`/media/${name}.jpg`}
+    width="1920"
+    height="1080"
+    aria-label={alt}
+  >
+    <source src={`/media/${name}.webm`} type="video/webm" />
+    <source src={`/media/${name}.mp4`} type="video/mp4" />
+  </video>
+  {
+    (caption || credit) && (
+      <figcaption>
+        {caption}
+        {credit && <span class="wm-film-credit">{credit}</span>}
+      </figcaption>
+    )
+  }
+</figure>
